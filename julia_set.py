@@ -1,5 +1,7 @@
 import time
 
+CONSTVAL = complex(-0.62772, -0.42193)
+
 def calc_z_serial_python(maxiter, zs, c):
   #' Calculate the Julia set for a given set of complex numbers and a constant c.
   output = [0] * len(zs)
@@ -40,14 +42,23 @@ def run_julia_set(desired_width, max_iterations):
   zs = calc_complex_numbers(-1.8, 1.8, -1.8, 1.8, desired_width, max_iterations)
   print(f"Length of zs: {len(zs)}")
   start_time = time.time()
-  output = calc_z_serial_python(max_iterations, zs, complex(-0.62772, -0.42193))
+  output = calc_z_serial_python(max_iterations, zs, CONSTVAL)
   end_time = time.time()
-  print(f"{calc_z_serial_python.__name__} took {end_time - start_time:.2f} seconds")
+  print(f"{calc_z_serial_python.__name__} took {end_time - start_time:.3f} seconds")
 
   # expected output sum with max_iterations=300, desired_width=1000
   assert(sum(output) == 33219980), "Output sum does not match expected value."
 
-
+def visualise_julia_set(desired_width, max_iterations):
+  #' Visualise the Julia set using matplotlib.
+  import matplotlib.pyplot as plt
+  zs = calc_complex_numbers(-1.8, 1.8, -1.8, 1.8, desired_width, max_iterations)
+  output = calc_z_serial_python(max_iterations, zs, CONSTVAL)
+  
+  plt.imshow([output[i:i + desired_width] for i in range(0, len(output), desired_width)], extent=(-1.8, 1.8, -1.8, 1.8), cmap='hot')
+  plt.colorbar()
+  plt.title('Julia Set')
+  plt.show()
 
 if __name__ == "__main__":
   run_julia_set(desired_width = 1000, max_iterations = 300)
