@@ -1,7 +1,8 @@
-from line_profiler import profile
+from numba import jit
+import time
 CONSTVAL = complex(-0.62772, -0.42193)
 
-@profile
+@jit
 def calc_z_serial_python(maxiter, zs, c):
   #' Calculate the Julia set for a given set of complex numbers and a constant c.
   output = [0] * len(zs)
@@ -40,8 +41,12 @@ def run_julia_set(desired_width, max_iterations):
   #' Run the Julia set calculation and return the results.
   print(f"Generating complex numbers to calculate Julia set")
   zs = calc_complex_numbers(-1.8, 1.8, -1.8, 1.8, desired_width)
-  print(f"Length of zs: {len(zs)}")
   output = calc_z_serial_python(max_iterations, zs, CONSTVAL)
+  print(f"Length of zs: {len(zs)}")
+  start = time.time()
+  output = calc_z_serial_python(max_iterations, zs, CONSTVAL)
+  end = time.time()
+  print(f"Julia set calculation took {end - start:.2f} seconds")
   
   # expected output sum with max_iterations=300, desired_width=1000
   assert(sum(output) == 33219980), "Output sum does not match expected value."
