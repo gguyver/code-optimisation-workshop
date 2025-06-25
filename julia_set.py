@@ -1,7 +1,7 @@
-import time
-
+from line_profiler import profile
 CONSTVAL = complex(-0.62772, -0.42193)
 
+@profile
 def calc_z_serial_python(maxiter, zs, c):
   #' Calculate the Julia set for a given set of complex numbers and a constant c.
   output = [0] * len(zs)
@@ -14,7 +14,7 @@ def calc_z_serial_python(maxiter, zs, c):
     output[i] = n
   return output
 
-def calc_complex_numbers(x1, x2, y1, y2, desired_width, max_iterations):
+def calc_complex_numbers(x1, x2, y1, y2, desired_width):
   #' Generate complex numbers to use for the Julia set.
   #' Returns a list of complex numbers and their corresponding constants.
   xstep = (x2 - x1) / desired_width
@@ -39,13 +39,10 @@ def calc_complex_numbers(x1, x2, y1, y2, desired_width, max_iterations):
 def run_julia_set(desired_width, max_iterations):
   #' Run the Julia set calculation and return the results.
   print(f"Generating complex numbers to calculate Julia set")
-  zs = calc_complex_numbers(-1.8, 1.8, -1.8, 1.8, desired_width, max_iterations)
+  zs = calc_complex_numbers(-1.8, 1.8, -1.8, 1.8, desired_width)
   print(f"Length of zs: {len(zs)}")
-  start_time = time.time()
   output = calc_z_serial_python(max_iterations, zs, CONSTVAL)
-  end_time = time.time()
-  print(f"{calc_z_serial_python.__name__} took {end_time - start_time:.3f} seconds")
-
+  
   # expected output sum with max_iterations=300, desired_width=1000
   assert(sum(output) == 33219980), "Output sum does not match expected value."
 
